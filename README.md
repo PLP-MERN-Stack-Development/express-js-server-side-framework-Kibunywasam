@@ -1,62 +1,85 @@
-# Express.js RESTful API Assignment
+# 🛒 Product Management API
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
+A RESTful Express.js API for managing products with full CRUD operations, authentication, filtering, search, and pagination.
 
-## Assignment Overview
+---
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
+##  How to Run the Server
 
-## Getting Started
+### Prerequisites
+- Node.js v18 or higher
+- npm (comes with Node.js)
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
+### Setup Steps
+1. **Clone or download** this repository
+2. **Install dependencies**:
+   ```bash
    npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
 
-## Files Included
+### Set up your environment:
+bash
+cp .env.example .env
 
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
+You may customize the API_KEY in .env if desired. The default key is mysecretapikey. 
 
-## Requirements
+### Start the server:
+bash
+node server.js
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+The API will be available at http://localhost:3000 .
+   ## Example Requests
+### Get all products (with pagination and filtering)
+bash
+curl "http://localhost:3000/api/products?category=electronics&search=laptop&page=1&limit=5"
 
-## API Endpoints
+### Create a new product
+bash
+curl -X POST http://localhost:3000/api/products \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: mysecretapikey" \
+  -d '{
+    "name": "Wireless Mouse",
+    "description": "Ergonomic design with long battery life",
+    "price": 29.99,
+    "category": "electronics",
+    "inStock": true
+  }'
 
-The API will have the following endpoints:
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+### Get product statistics
+bash
+curl http://localhost:3000/api/products/stats
 
-## Submission
+Sample Response:
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+json
+{
+  "electronics": 3,
+  "kitchen": 1
+}
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
 
-## Resources
+ ### Product Schema
+Each product object includes:
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+id (string, UUID) – unique identifier
+name (string) – required
+description (string) – optional
+price (number) – required, must be > 0
+category (string) – required
+inStock (boolean) – optional (defaults to true)
+
+ ### Authentication
+All write operations (POST, PUT, DELETE) require the following header:
+
+http
+x-api-key: mysecretapikey
+Requests without a valid key will receive a 401 Unauthorized response.
+
+ ### Error Handling
+The API returns appropriate HTTP status codes:
+
+400 Bad Request – Invalid input data
+401 Unauthorized – Missing or invalid API key
+404 Not Found – Product or route not found
+500 Internal Server Error – Unexpected server issue
